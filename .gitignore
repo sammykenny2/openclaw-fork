@@ -76,6 +76,8 @@ USER.md
 
 # local tooling
 .serena/
+.claude/
+*.tgz
 
 # Agent credentials and memory (NEVER COMMIT)
 /memory/

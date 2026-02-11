@@ -1,0 +1,8 @@
+{
+  "id": "custom",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
