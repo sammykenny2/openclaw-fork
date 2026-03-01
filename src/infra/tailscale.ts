@@ -299,6 +299,11 @@ async function execWithSudoFallback(
   }
 }
 
+function funnelHttpsPortArgs(): string[] {
+  const port = process.env.OPENCLAW_TAILSCALE_HTTPS_PORT?.trim();
+  return port ? [`--https=${port}`] : [];
+}
+
 export async function ensureFunnel(
   port: number,
   exec: typeof runExec = runExec,
@@ -336,7 +341,7 @@ export async function ensureFunnel(
     const { stdout } = await execWithSudoFallback(
       exec,
       tailscaleBin,
-      ["funnel", "--yes", "--bg", `${port}`],
+      ["funnel", "--yes", "--bg", ...funnelHttpsPortArgs(), `${port}`],
       {
         maxBuffer: 200_000,
         timeoutMs: 15_000,
@@ -407,7 +412,7 @@ export async function disableTailscaleServe(exec: typeof runExec = runExec) {
 
 export async function enableTailscaleFunnel(port: number, exec: typeof runExec = runExec) {
   const tailscaleBin = await getTailscaleBinary();
-  await execWithSudoFallback(exec, tailscaleBin, ["funnel", "--bg", "--yes", `${port}`], {
+  await execWithSudoFallback(exec, tailscaleBin, ["funnel", "--bg", "--yes", ...funnelHttpsPortArgs(), `${port}`], {
     maxBuffer: 200_000,
     timeoutMs: 15_000,
   });

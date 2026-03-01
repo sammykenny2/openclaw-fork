@@ -121,3 +121,7 @@ dist/protocol.schema.json
 
 # Synthing
 **/.stfolder/
+
+# Fork-specific
+.claude/
+*.tgz
