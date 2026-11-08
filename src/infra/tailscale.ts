@@ -391,6 +391,17 @@ export async function claimTailscaleServePort(
   );
 }
 
+function funnelHttpsPortArgs(mode: "serve" | "funnel", httpsPort?: number): string[] {
+  if (httpsPort !== undefined) {
+    return [`--https=${httpsPort}`];
+  }
+  if (mode === "funnel") {
+    const port = process.env.OPENCLAW_TAILSCALE_HTTPS_PORT?.trim();
+    return port ? [`--https=${port}`] : [];
+  }
+  return [];
+}
+
 // Startup failure cleanup stays inside the queued operation. Only a returned
 // claim's stop reenters the queue, so cleanup cannot deadlock its own startup.
 async function claimTailscaleRouteOwned(
@@ -456,7 +467,7 @@ async function claimTailscaleRouteOwned(
         mode,
         "--yes",
         "--bg=false",
-        ...(params.httpsPort === undefined ? [] : [`--https=${params.httpsPort}`]),
+        ...funnelHttpsPortArgs(mode, params.httpsPort),
         `${target}`,
       ],
       stdout,
